@@ -1,23 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import menu from "./menu.json";
+
+import "./App.css";
+
+const MenuItem = ({ item, index, isSub }) => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const handleSubMenu = () => {
+    if (item.subMenu?.length > 0) {
+      return item.subMenu.map((item) => (
+        <MenuItem key={item.id} item={item} isSub />
+      ));
+    }
+
+    return null;
+  };
+
+  return (
+    <div
+      style={{ left: isSub ? 0 : `${index * 200}px` }}
+      onMouseEnter={() => setIsMenuOpen(true)}
+      onMouseLeave={() => setIsMenuOpen(false)}
+      className={isSub ? "sub-menu" : "main-menu"}>
+      <h3 className="menu-item-name">{item.name}</h3>
+      {isMenuOpen && <div className="menu-item">{handleSubMenu()}</div>}
+    </div>
+  );
+};
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="menu">
+      {menu.map((item, index) => (
+        <MenuItem key={item.id} item={item} index={index} />
+      ))}
     </div>
   );
 }
